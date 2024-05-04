@@ -599,5 +599,840 @@ class ManagerView {
     this.zonaCentral.append(container);
   }
 
+
+  //+++++++++++++++++++++++++++++++ añado para esta práctica metodos para formulario ++++++++++++++++++++++++++++++++
+
+  //mostrar en MODALES o se puede mostrar en la PARTE CENTRAL segun enunciado
+
+  //mostrar categorias en MODAL
+  showNewCategoryModal(done, cat, error) {
+    const messageModalContainer = document.getElementById('messageModal');
+    const messageModal = new bootstrap.Modal('#messageModal');
+
+    const title = document.getElementById('messageModalTitle');
+    title.innerHTML = 'Nueva Categoría';
+    const body = messageModalContainer.querySelector('.modal-body');
+    body.replaceChildren();
+    if (done) {
+      body.insertAdjacentHTML('afterbegin', `<div class="p-3">La categoría <strong>${cat.title}</strong> ha sido creada correctamente.</div>`);
+    } else {
+      body.insertAdjacentHTML(
+        'afterbegin',
+        `<div class="error text-danger p-3"><i class="bi bi-exclamation-triangle"></i> La categoría <strong>${cat.title}</strong> ya está creada.</div>`,
+      );
+    }
+    messageModal.show();
+    const listener = (event) => {
+      if (done) {
+        document.fNewCategory.reset();
+      }
+      document.fNewCategory.ncTitle.focus();
+    };
+    messageModalContainer.addEventListener('hidden.bs.modal', listener, { once: true });
+  }
+
+  //mostrar borrar categorias en MODAL
+  showRemoveCategoryModal(done, cat, error) {
+    const messageModalContainer = document.getElementById('messageModal');
+    const messageModal = new bootstrap.Modal('#messageModal');
+
+    const title = document.getElementById('messageModalTitle');
+    title.innerHTML = 'Borrado de categoría';
+    const body = messageModalContainer.querySelector('.modal-body');
+    body.replaceChildren();
+    if (done) {
+      body.insertAdjacentHTML('afterbegin', `<div class="p-3">La categoría <strong>${cat.title}</strong> ha sido eliminada correctamente.</div>`);
+    } else {
+      body.insertAdjacentHTML(
+        'afterbegin',
+        `<div class="error text-danger p-3"><i class="bi bi-exclamation-triangle"></i> La categoría <strong>${cat.title}</strong> no se ha podido borrar.</div>`,
+      );
+    }
+    messageModal.show();
+    const listener = (event) => {
+      if (done) {
+        const removeCategory = document.getElementById('remove-category');
+        const button = removeCategory.querySelector(`button.btn[data-category="${cat.title}"]`);
+        button.parentElement.parentElement.remove();
+      }
+    };
+    messageModalContainer.addEventListener('hidden.bs.modal', listener, { once: true });
+  }
+
+  // muestra borrar lista productos (interior array)
+  showRemoveProductList(products) {
+    const listContainer = document.getElementById('product-list').querySelector('div.row');
+    listContainer.replaceChildren();
+
+    let exist = false;
+    for (const product of products) {
+      exist = true;
+      listContainer.insertAdjacentHTML('beforeend', `<div class="col-md-4 rProduct">
+				<figure class="card card-product-grid card-lg"> <a data-serial="${product.serial}" href="#single-product" class="img-wrap"><img class="${product.constructor.name}-style" src="${product.url}"></a>
+					<figcaption class="info-wrap">
+						<div class="row">
+							<div class="col-md-8"> <a data-serial="${product.serial}" href="#single-product" class="title">${product.brand} - ${product.model}</a> </div>
+							<div class="col-md-4">
+								<div class="rating text-right"> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> </div>
+							</div>
+						</div>
+					</figcaption>
+					<div class="bottom-wrap"> <a href="#" data-serial="${product.serial}" class="btn btn-primary float-right"> Eliminar </a>
+						<div class="price-wrap"> <span class="price h5">${product.price.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })}</span> <br> <small class="text-success">Free shipping</small> </div>
+					</div>
+				</figure>
+			</div>`);
+    }
+    if (!exist) {
+      listContainer.insertAdjacentHTML('beforeend', '<p class="text-danger"><i class="bi bi-exclamation-triangle"></i> No existen productos para esta categoría o tipo.</p>');
+    }
+  }
+
+  // error al borrar lista de productos
+  showRemoveProductListError(category) {
+    const listContainer = document.getElementById('product-list').querySelector('div.row');
+    listContainer.replaceChildren();
+    listContainer.insertAdjacentHTML('beforeend', `<p class="text-danger"><i class="bi bi-exclamation-triangle"></i> La categoría <strong>${category.title}</strong> no existe en el Manager.</p>`);
+  }
+
+  // muestra borrar productos en MODAL
+  showRemoveProductModal(done, product, error) {
+    const productList = document.getElementById('product-list');
+    const messageModalContainer = document.getElementById('messageModal');
+    const messageModal = new bootstrap.Modal('#messageModal');
+
+    const title = document.getElementById('messageModalTitle');
+    title.innerHTML = 'Producto eliminado';
+    const body = messageModalContainer.querySelector('.modal-body');
+    body.replaceChildren();
+    if (done) {
+      body.insertAdjacentHTML('afterbegin', `<div class="p-3">El producto <strong>${product.brand} - ${product.model}</strong> con nº de serie <strong>${product.serial}</strong> ha sido eliminado correctamente.</div>`);
+    } else {
+      body.insertAdjacentHTML(
+        'afterbegin',
+        '<div class="error text-danger p-3"><i class="bi bi-exclamation-triangle"></i> El producto no existe en el manager.</div>',
+      );
+    }
+    messageModal.show();
+    const listener = (event) => {
+      if (done) {
+        const button = productList.querySelector(`a.btn[data-serial="${product.serial}"]`);
+        button.parentElement.parentElement.parentElement.remove();
+      }
+    };
+    messageModalContainer.addEventListener('hidden.bs.modal', listener, { once: true });
+  }
+  
+
+
+
+
+
+
+
+
+
+
+  // método que muestra menu con las operaciones del formulario
+  showAdminMenu() {
+    const menuOption = document.createElement('li');
+    menuOption.classList.add('nav-item');
+    menuOption.classList.add('dropdown');
+    menuOption.insertAdjacentHTML(
+      'afterbegin',
+      '<a class="nav-link dropdown-toggle" href="#" id="navServices" role="button" data-bs-toggle="dropdown" aria-expanded="false">	Adminitración</a>',
+    );
+    const suboptions = document.createElement('ul');
+    suboptions.classList.add('dropdown-menu');
+    suboptions.insertAdjacentHTML('beforeend', '<li><a id="lnewCategory" class="dropdown-item" href="#new-category">Crear categoría</a></li>');
+    suboptions.insertAdjacentHTML('beforeend', '<li><a id="ldelCategory" class="dropdown-item" href="#del-category">Eliminar categoría</a></li>');
+    suboptions.insertAdjacentHTML('beforeend', '<li><a id="lnewProduct" class="dropdown-item" href="#new-product">Crear producto</a></li>');
+    suboptions.insertAdjacentHTML('beforeend', '<li><a id="ldelProduct" class="dropdown-item" href="#del-product">Eliminar producto</a></li>');
+    suboptions.insertAdjacentHTML('beforeend', '<li><a id="ldelProduct2" class="dropdown-item" href="#del-product">Eliminar producto 2</a></li>');
+    menuOption.append(suboptions);
+    this.menu.append(menuOption);
+  }
+
+  // método muestra en modal categoria
+  showNewCategoryModal(done, cat, error) {
+    const messageModalContainer = document.getElementById('messageModal');
+    const messageModal = new bootstrap.Modal('#messageModal');
+
+    const title = document.getElementById('messageModalTitle');
+    title.innerHTML = 'Nueva Categoría';
+    const body = messageModalContainer.querySelector('.modal-body');
+    body.replaceChildren();
+    if (done) {
+      body.insertAdjacentHTML('afterbegin', `<div class="p-3">La categoría <strong>${cat.title}</strong> ha sido creada correctamente.</div>`);
+    } else {
+      body.insertAdjacentHTML(
+        'afterbegin',
+        `<div class="error text-danger p-3"><i class="bi bi-exclamation-triangle"></i> La categoría <strong>${cat.title}</strong> ya está creada.</div>`,
+      );
+    }
+    messageModal.show();
+    const listener = (event) => {
+      if (done) {
+        document.fNewCategory.reset();
+      }
+      document.fNewCategory.ncTitle.focus();
+    };
+    messageModalContainer.addEventListener('hidden.bs.modal', listener, { once: true });
+  }
+
+  //método que muestra borrar categoria en MODAL
+  showRemoveCategoryModal(done, cat, error) {
+    const messageModalContainer = document.getElementById('messageModal');
+    const messageModal = new bootstrap.Modal('#messageModal');
+
+    const title = document.getElementById('messageModalTitle');
+    title.innerHTML = 'Borrado de categoría';
+    const body = messageModalContainer.querySelector('.modal-body');
+    body.replaceChildren();
+    if (done) {
+      body.insertAdjacentHTML('afterbegin', `<div class="p-3">La categoría <strong>${cat.title}</strong> ha sido eliminada correctamente.</div>`);
+    } else {
+      body.insertAdjacentHTML(
+        'afterbegin',
+        `<div class="error text-danger p-3"><i class="bi bi-exclamation-triangle"></i> La categoría <strong>${cat.title}</strong> no se ha podido borrar.</div>`,
+      );
+    }
+    messageModal.show();
+    const listener = (event) => {
+      if (done) {
+        const removeCategory = document.getElementById('remove-category');
+        const button = removeCategory.querySelector(`button.btn[data-category="${cat.title}"]`);
+        button.parentElement.parentElement.remove();
+      }
+    };
+    messageModalContainer.addEventListener('hidden.bs.modal', listener, { once: true });
+  }
+
+
+
+  //método formulario añadir categorias
+  showNewCategoryForm() {
+    this.main.replaceChildren();
+    if (this.categories.children.length > 1) this.categories.children[1].remove();
+
+    const container = document.createElement('div');
+    container.classList.add('container');
+    container.classList.add('my-3');
+    container.id = 'new-category';
+
+    container.insertAdjacentHTML(
+      'afterbegin',
+      '<h1 class="display-5">Nueva categoría</h1>',
+    );
+    container.insertAdjacentHTML(
+      'beforeend',
+      `<form name="fNewCategory" role="form" class="row g-3" novalidate>
+			<div class="col-md-6 mb-3">
+				<label class="form-label" for="ncTitle">Título *</label>
+				<div class="input-group">
+					<span class="input-group-text"><i class="bi bi-type"></i></span>
+					<input type="text" class="form-control" id="ncTitle" name="ncTitle"
+						placeholder="Título de categoría" value="" required>
+					<div class="invalid-feedback">El título es obligatorio.</div>
+					<div class="valid-feedback">Correcto.</div>
+				</div>
+			</div>
+			<div class="col-md-6 mb-3">
+				<label class="form-label" for="ncUrl">URL de la imagen *</label>
+				<div class="input-group">
+					<span class="input-group-text"><i class="bi bi-file-image"></i></span>
+					<input type="url" class="form-control" id="ncUrl" name="ncUrl" placeholder="URL de la imagen"
+						value="" required>
+					<div class="invalid-feedback">La URL no es válida.</div>
+					<div class="valid-feedback">Correcto.</div>
+				</div>
+			</div>
+			<div class="col-md-12 mb-3">
+				<label class="form-label" for="ncDescription">Descripción</label>
+				<div class="input-group">
+					<span class="input-group-text"><i class="bi bi-body-text"></i></span>
+					<input type="text" class="form-control" id="ncDescription" name="ncDescription" value="">
+					<div class="invalid-feedback"></div>
+					<div class="valid-feedback">Correcto.</div>
+				</div>
+			</div>
+			<div class="mb-12">
+				<button class="btn btn-primary" type="submit">Enviar</button>
+				<button class="btn btn-primary" type="reset">Cancelar</button>
+			</div>
+		</form>`,
+    );
+    this.main.append(container);
+  }
+
+
+  //método formulario para borrar categorias
+  showRemoveCategoryForm(categories) {
+    this.main.replaceChildren();
+    if (this.categories.children.length > 1) this.categories.children[1].remove();
+
+    const container = document.createElement('div');
+    container.classList.add('container');
+    container.classList.add('my-3');
+    container.id = 'remove-category';
+    container.insertAdjacentHTML(
+      'afterbegin',
+      '<h1 class="display-5">Eliminar una categoría</h1>',
+    );
+
+    const row = document.createElement('div');
+    row.classList.add('row');
+
+    for (const category of categories) {
+      row.insertAdjacentHTML('beforeend', `<div class="col-lg-3 col-md-6">
+        <div class="cat-list-image"><img alt="${category.title}" src="${category.url}" />
+        </div>
+        <div class="cat-list-text">
+          <a data-category="${category.title}" href="#category-list"><h3>${category.title}</h3></a>
+					<div>${category.description}</div>
+        </div>
+				<div><button class="btn btn-primary" data-category="${category.title}" type='button'>Eliminar</button></div>
+    </div>`);
+    }
+    container.append(row);
+    this.main.append(container);
+  }
+
+//------------------------------PRODUCTOS FORMULARIO ----------
+
+//mostrar nuevo producto en formulario
+showNewProductForm(categories) {
+  this.main.replaceChildren();
+  if (this.categories.children.length > 1) this.categories.children[1].remove();
+
+  const container = document.createElement('div');
+  container.classList.add('container');
+  container.classList.add('my-3');
+  container.id = 'new-product';
+
+  container.insertAdjacentHTML(
+    'afterbegin',
+    '<h1 class="display-5">Nuevo producto</h1>',
+  );
+
+  const form = document.createElement('form');
+  form.name = 'fNewProduct';
+  form.setAttribute('role', 'form');
+  form.setAttribute('novalidate', '');
+  form.classList.add('row');
+  form.classList.add('g-3');
+
+  form.insertAdjacentHTML(
+    'beforeend',
+    `<div class="col-md-4 mb-3">
+      <label class="form-label" for="npSerial">Número de serie *</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-key"></i></span>
+        <input type="text" class="form-control" id="npSerial" name="npSerial" value="" required>
+        <div class="invalid-feedback">El número de serie es obligatorio. Debe ser un entero.</div>
+        <div class="valid-feedback">Correcto.</div>
+      </div>
+    </div>`,
+  );
+  form.insertAdjacentHTML(
+    'beforeend',
+    `<div class="col-md-4 mb-3">
+      <label class="form-label" for="npBrand">Marca *</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-pen"></i></span>
+        <input type="text" class="form-control" id="npBrand" name="npBrand"
+          placeholder="Marca" value="" required>
+        <div class="invalid-feedback">La marca es obligatoria.</div>
+        <div class="valid-feedback">Correcto.</div>
+      </div>
+    </div>`,
+  );
+  form.insertAdjacentHTML(
+    'beforeend',
+    `<div class="col-md-4 mb-3">
+      <label class="form-label" for="npModel">Modelo *</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-hash"></i></span>
+        <input type="text" class="form-control" id="npModel" name="npModel"
+          placeholder="Modelo" value="" required>
+        <div class="invalid-feedback">El modelo es obligatorio.</div>
+        <div class="valid-feedback">Correcto.</div>
+      </div>
+    </div>`,
+  );
+  form.insertAdjacentHTML(
+    'beforeend',
+    `<div class="col-md-12 mb-3 input-group">
+      <label class="input-group-text" for="npType" style="color: #faa541">* Tipo de producto</label>
+      <select class="form-select" name="npType" id="npType" requiered>
+        <option selected>Selecciona...</option>
+        <option value="Camera">Cámara</option>
+        <option value="Laptop">Portátil</option>
+        <option value="Tablet">Tablet</option>
+        <option value="Smartphone">Teléfono</option>
+      </select>
+      <div class="invalid-feedback">El tipo es obligatorio.</div>
+      <div class="valid-feedback">Correcto.</div>
+    </div>`,
+  );
+  form.insertAdjacentHTML(
+    'beforeend',
+    `<div class="col-md-3 mb-3">
+      <label class="form-label" for="npPrice">Precio *</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-currency-euro"></i></span>
+        <input type="number" class="form-control" id="npPrice" name="npPrice"
+          placeholder="Precio" value="" min="0" step="10" required>
+        <div class="invalid-feedback">El precio es obligatorio.</div>
+        <div class="valid-feedback">Correcto.</div>
+      </div>
+    </div>`,
+  );
+  form.insertAdjacentHTML(
+    'beforeend',
+    `<div class="col-md-3 mb-3">
+      <label class="form-label" for="npTax">Porcentaje de impuestos *</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-percent"></i></span>
+        <input type="number" class="form-control" id="npTax" name="npTax"
+          placeholder="21%" value="21" min="0" step="1" required>
+        <div class="invalid-feedback">Los impuestos son obligatorios.</div>
+        <div class="valid-feedback">Correcto.</div>
+      </div>
+    </div>`,
+  );
+  form.insertAdjacentHTML(
+    'beforeend',
+    `<div class="col-md-6 mb-3">
+      <label class="form-label" for="npUrl">URL *</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-card-image"></i></span>
+        <input type="url" class="form-control" id="npUrl" name="npUrl"
+          placeholder="http://www.test.es" value="" min="0" step="1" required>
+        <div class="invalid-feedback">La URL no es válida.</div>
+        <div class="valid-feedback">Correcto.</div>
+      </div>
+    </div>`,
+  );
+  form.insertAdjacentHTML(
+    'beforeend',
+    `<div class="col-md-3 mb-3">
+      <label class="form-label" for="npCategories">Categorías *</label>
+      <div class="input-group">
+        <label class="input-group-text" for="npCategories"><i class="bi bi-card-checklist"></i></label>
+        <select class="form-select" name="npCategories" id="npCategories" multiple required>
+        </select>
+        <div class="invalid-feedback">El producto debe pertenecer al menos a una categoría.</div>
+        <div class="valid-feedback">Correcto.</div>
+      </div>
+    </div>`,
+  );
+  const npCategories = form.querySelector('#npCategories');
+  for (const category of categories) {
+    npCategories.insertAdjacentHTML('beforeend', `<option value="${category.title}">${category.title}</option>`);
+  }
+  form.insertAdjacentHTML(
+    'beforeend',
+    `<div class="col-md-9 mb-3">
+      <label class="form-label" for="npModel">Descripción</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-text-paragraph"></i></span>
+        <textarea class="form-control" id="npDescription" name="npDescription" rows="4">
+        </textarea>
+        <div class="invalid-feedback"></div>
+        <div class="valid-feedback">Correcto.</div>
+      </div>
+    </div>`,
+  );
+  form.insertAdjacentHTML(
+    'beforeend',
+    `<div class="mb-12">
+      <button class="btn btn-primary" type="submit">Enviar</button>
+      <button class="btn btn-primary" type="reset">Cancelar</button>
+    </div>`,
+  );
+
+  container.append(form);
+  this.main.append(container);
+}
+
+//mostrar nuevo producto en MODAL
+showNewProductModal(done, product, error) {
+  const messageModalContainer = document.getElementById('messageModal');
+  const messageModal = new bootstrap.Modal('#messageModal');
+
+  const title = document.getElementById('messageModalTitle');
+  title.innerHTML = 'Producto creado';
+  const body = messageModalContainer.querySelector('.modal-body');
+  body.replaceChildren();
+  if (done) {
+    body.insertAdjacentHTML('afterbegin', `<div class="p-3">El producto <strong>${product.brand} - ${product.model}</strong> con nº de serie <strong>${product.serial}</strong> ha sido creada correctamente.</div>`);
+  } else {
+    body.insertAdjacentHTML(
+      'afterbegin',
+      `<div class="error text-danger p-3"><i class="bi bi-exclamation-triangle"></i> El producto <strong>${product.brand} - ${product.model}</strong> no ha podido crearse correctamente.</div>`,
+    );
+  }
+  messageModal.show();
+  const listener = (event) => {
+    if (done) {
+      document.fNewProduct.reset();
+    }
+    document.fNewProduct.npSerial.focus();
+  };
+  messageModalContainer.addEventListener('hidden.bs.modal', listener, { once: true });
+}
+
+//muestra borrar productos del formulario
+showRemoveProductForm(categories) {
+  this.main.replaceChildren();
+  if (this.categories.children.length > 1) this.categories.children[1].remove();
+
+  const container = document.createElement('div');
+  container.classList.add('container');
+  container.classList.add('my-3');
+  container.id = 'remove-product';
+
+  container.insertAdjacentHTML(
+    'afterbegin',
+    '<h1 class="display-5">Eliminar un producto</h1>',
+  );
+
+  const form = document.createElement('form');
+  form.name = 'fRemoveProduct';
+  form.setAttribute('role', 'form');
+  form.setAttribute('novalidate', '');
+  form.classList.add('row');
+  form.classList.add('g-3');
+
+  form.insertAdjacentHTML(
+    'beforeend',
+    `<div class="col-md-6 mb-3">
+      <label class="form-label" for="rpType">Tipos de producto</label>
+      <div class="input-group">
+        <label class="input-group-text" for="rpType"><i class="bi bi-card-checklist"></i></label>
+        <select class="form-select" name="rpType" id="rpType">
+          <option disabled selected>Selecciona un tipo...</option>
+          <option value="Camera">Cámara</option>
+          <option value="Laptop">Portátil</option>
+          <option value="Tablet">Tablet</option>
+          <option value="Smartphone">Teléfono</option>
+        </select>
+      </div>
+    </div>`,
+  );
+
+  form.insertAdjacentHTML(
+    'beforeend',
+    `<div class="col-md-6 mb-3">
+      <label class="form-label" for="rpCategories">Categorías del producto</label>
+      <div class="input-group">
+        <label class="input-group-text" for="rpCategories"><i class="bi bi-card-checklist"></i></label>
+        <select class="form-select" name="rpCategories" id="rpCategories">
+          <option disabled selected value=''>Selecciona una categoría</option>
+        </select>
+      </div>
+    </div>`,
+  );
+  const rpCategories = form.querySelector('#rpCategories');
+  for (const category of categories) {
+    rpCategories.insertAdjacentHTML('beforeend', `<option value="${category.title}">${category.title}</option>`);
+  }
+
+  container.append(form);
+  container.insertAdjacentHTML(
+    'beforeend',
+    '<div id="product-list" class="container my-3"><div class="row"></div></div>',
+  );
+
+  this.main.append(container);
+}
+
+//borrar productos FORM
+showRemoveProductForm2(categories) {
+  this.main.replaceChildren();
+  if (this.categories.children.length > 1) this.categories.children[1].remove();
+
+  const container = document.createElement('div');
+  container.classList.add('container');
+  container.classList.add('my-3');
+  container.id = 'remove-product';
+
+  container.insertAdjacentHTML(
+    'afterbegin',
+    `<h1 class="display-5">Eliminar un producto 2</h1>
+     <p>Filtra tanto por tipo como por categoría.</p>
+    `,
+  );
+
+  const form = document.createElement('form');
+  form.name = 'fRemoveProduct';
+  form.setAttribute('role', 'form');
+  form.setAttribute('novalidate', '');
+  form.classList.add('row');
+  form.classList.add('g-3');
+
+  form.insertAdjacentHTML(
+    'beforeend',
+    `<div class="col-md-6 mb-3">
+      <label class="form-label" for="rpType">Tipos de producto</label>
+      <div class="input-group">
+        <label class="input-group-text" for="rpType"><i class="bi bi-card-checklist"></i></label>
+        <select class="form-select" name="rpType" id="rpType">
+          <option selected>Selecciona un tipo...</option>
+          <option value="Camera">Cámara</option>
+          <option value="Laptop">Portátil</option>
+          <option value="Tablet">Tablet</option>
+          <option value="Smartphone">Teléfono</option>
+        </select>
+      </div>
+    </div>`,
+  );
+
+  form.insertAdjacentHTML(
+    'beforeend',
+    `<div class="col-md-6 mb-3">
+      <label class="form-label" for="rpCategories">Categorías del producto</label>
+      <div class="input-group">
+        <label class="input-group-text" for="rpCategories"><i class="bi bi-card-checklist"></i></label>
+        <select class="form-select" name="rpCategories" id="rpCategories">
+          <option selected value=''>Selecciona una categoría</option>
+        </select>
+      </div>
+    </div>`,
+  );
+
+  form.insertAdjacentHTML(
+    'beforeend',
+    `<div class="col-md-12 mb-3">
+      <button class="btn btn-primary">Filtrar</button>
+    </div>`,
+  );
+  const rpCategories = form.querySelector('#rpCategories');
+  for (const category of categories) {
+    rpCategories.insertAdjacentHTML('beforeend', `<option value="${category.title}">${category.title}</option>`);
+  }
+
+  container.append(form);
+  container.insertAdjacentHTML(
+    'beforeend',
+    '<div id="product-list" class="container my-3"><div class="row"></div></div>',
+  );
+
+  this.main.append(container);
+}
+
+//muestra borrar lista productos
+showRemoveProductList(products) {
+  const listContainer = document.getElementById('product-list').querySelector('div.row');
+  listContainer.replaceChildren();
+
+  let exist = false;
+  for (const product of products) {
+    exist = true;
+    listContainer.insertAdjacentHTML('beforeend', `<div class="col-md-4 rProduct">
+      <figure class="card card-product-grid card-lg"> <a data-serial="${product.serial}" href="#single-product" class="img-wrap"><img class="${product.constructor.name}-style" src="${product.url}"></a>
+        <figcaption class="info-wrap">
+          <div class="row">
+            <div class="col-md-8"> <a data-serial="${product.serial}" href="#single-product" class="title">${product.brand} - ${product.model}</a> </div>
+            <div class="col-md-4">
+              <div class="rating text-right"> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> </div>
+            </div>
+          </div>
+        </figcaption>
+        <div class="bottom-wrap"> <a href="#" data-serial="${product.serial}" class="btn btn-primary float-right"> Eliminar </a>
+          <div class="price-wrap"> <span class="price h5">${product.price.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })}</span> <br> <small class="text-success">Free shipping</small> </div>
+        </div>
+      </figure>
+    </div>`);
+  }
+  if (!exist) {
+    listContainer.insertAdjacentHTML('beforeend', '<p class="text-danger"><i class="bi bi-exclamation-triangle"></i> No existen productos para esta categoría o tipo.</p>');
+  }
+}
+
+//método error al borrar lista productos
+showRemoveProductListError(category) {
+  const listContainer = document.getElementById('product-list').querySelector('div.row');
+  listContainer.replaceChildren();
+  listContainer.insertAdjacentHTML('beforeend', `<p class="text-danger"><i class="bi bi-exclamation-triangle"></i> La categoría <strong>${category.title}</strong> no existe en el Manager.</p>`);
+}
+
+//muestra borrar producto en MODAL
+showRemoveProductModal(done, product, error) {
+  const productList = document.getElementById('product-list');
+  const messageModalContainer = document.getElementById('messageModal');
+  const messageModal = new bootstrap.Modal('#messageModal');
+
+  const title = document.getElementById('messageModalTitle');
+  title.innerHTML = 'Producto eliminado';
+  const body = messageModalContainer.querySelector('.modal-body');
+  body.replaceChildren();
+  if (done) {
+    body.insertAdjacentHTML('afterbegin', `<div class="p-3">El producto <strong>${product.brand} - ${product.model}</strong> con nº de serie <strong>${product.serial}</strong> ha sido eliminado correctamente.</div>`);
+  } else {
+    body.insertAdjacentHTML(
+      'afterbegin',
+      '<div class="error text-danger p-3"><i class="bi bi-exclamation-triangle"></i> El producto no existe en el manager.</div>',
+    );
+  }
+  messageModal.show();
+  const listener = (event) => {
+    if (done) {
+      const button = productList.querySelector(`a.btn[data-serial="${product.serial}"]`);
+      button.parentElement.parentElement.parentElement.remove();
+    }
+  };
+  messageModalContainer.addEventListener('hidden.bs.modal', listener, { once: true });
+}
+
+//-------------------------------- METODOS BIND ASOCIADOS -------------------------------
+
+
+// bind admin menu
+bindAdminMenu(hNewCategory, hRemoveCategory, hNewProductForm, hRemoveProduct, hRemoveProduct2) {
+  const newCategoryLink = document.getElementById('lnewCategory');
+  newCategoryLink.addEventListener('click', (event) => {
+    this[EXCECUTE_HANDLER](hNewCategory, [], '#new-category', { action: 'newCategory' }, '#', event);
+  });
+  const delCategoryLink = document.getElementById('ldelCategory');
+  delCategoryLink.addEventListener('click', (event) => {
+    this[EXCECUTE_HANDLER](hRemoveCategory, [], '#remove-category', { action: 'removeCategory' }, '#', event);
+  });
+  const newProductLink = document.getElementById('lnewProduct');
+  newProductLink.addEventListener('click', (event) => {
+    this[EXCECUTE_HANDLER](hNewProductForm, [], '#new-product', { action: 'newProduct' }, '#', event);
+  });
+  const delProductLink = document.getElementById('ldelProduct');
+  delProductLink.addEventListener('click', (event) => {
+    this[EXCECUTE_HANDLER](hRemoveProduct, [], '#remove-product', { action: 'removeProduct' }, '#', event);
+  });
+  const delProductLink2 = document.getElementById('ldelProduct2');
+  delProductLink2.addEventListener('click', (event) => {
+    this[EXCECUTE_HANDLER](hRemoveProduct2, [], '#remove-product', { action: 'removeProduct2' }, '#', event);
+  });
+}
+
+//bind para nueva categoria en formulario
+bindNewCategoryForm(handler) {
+  newCategoryValidation(handler);
+}
+
+// bind para borrar categoria del formulario
+bindRemoveCategoryForm(delHandler, getCategoryHandler) {
+  const removeContainer = document.getElementById('remove-category');
+  const buttons = removeContainer.getElementsByTagName('button');
+  for (const button of buttons) {
+    button.addEventListener('click', function (event) {
+      delHandler(this.dataset.category);
+    });
+  }
+  const categoryLinks = removeContainer.querySelectorAll('a[data-category]');
+  for (const link of categoryLinks) {
+    link.addEventListener('click', (event) => {
+      this[EXCECUTE_HANDLER](
+        getCategoryHandler,
+        [link.dataset.category],
+        '#product-list',
+        { action: 'productsCategoryList', category: link.dataset.category },
+        '#category-list',
+        event,
+      );
+    });
+  }
+}
+
+// bind validacion nuevo producto
+bindNewProductForm(handler) {
+  newProductValidation(handler);
+}
+
+// bind seleccion borrar producto
+bindRemoveProductSelects(hTypes, hCategories) {
+  const rpType = document.getElementById('rpType');
+  rpType.addEventListener('change', (event) => {
+    this[EXCECUTE_HANDLER](
+      hTypes,
+      [event.currentTarget.value],
+      '#remove-product',
+      { action: 'removeProductByType', type: event.currentTarget.value },
+      '#remove-product',
+      event,
+    );
+  });
+  const rpCategories = document.getElementById('rpCategories');
+  rpCategories.addEventListener('change', (event) => {
+    this[EXCECUTE_HANDLER](
+      hCategories,
+      [event.currentTarget.value],
+      '#remove-product',
+      { action: 'removeProductByCategory', category: event.currentTarget.value },
+      '#remove-product',
+      event,
+    );
+  });
+}
+
+// bind borrar producto
+bindRemoveProduct(handler) {
+  const productList = document.getElementById('product-list');
+  const buttons = productList.querySelectorAll('a.btn');
+  for (const button of buttons) {
+    button.addEventListener('click', function (event) {
+      handler(this.dataset.serial);
+      event.preventDefault();
+    });
+  }
+}
+
+bindBuyProduct(handler) {
+  const bBuy = document.getElementById('b-buy');
+  bBuy.addEventListener('click', (event) => {
+    handler(event.currentTarget.dataset.serial);
+    event.preventDefault();
+  });
+}
+
+bindBuyProductInList(handler) {
+  const productList = document.getElementById('product-list');
+  const buttons = productList.querySelectorAll('a.btn');
+  for (const button of buttons) {
+    button.addEventListener('click', (event) => {
+      handler(event.currentTarget.dataset.serial);
+      event.preventDefault();
+    });
+  }
+}
+
+bindBuyProductInNewWindow(handler) {
+  const button = this.productWindow.document.querySelector('#single-product button');
+  button.addEventListener('click', (event) => {
+    this.productWindow.close();
+    handler(event.currentTarget.dataset.serial);
+    event.preventDefault();
+  });
+}
+
+// bind asociado a borrar producto SUBMIT
+bindRemoveProductSubmit(handler) {
+  document.forms.fRemoveProduct.addEventListener('submit', (event) => {
+    this[EXCECUTE_HANDLER](
+      handler,
+      [document.forms.fRemoveProduct.rpType.value, document.forms.fRemoveProduct.rpCategories.value],
+      '#remove-product',
+      {
+        action: 'removeProductByTypeCategory',
+        category: document.forms.fRemoveProduct.rpCategories.value,
+        type: document.forms.fRemoveProduct.rpType.value,
+      },
+      '#remove-product',
+      event,
+    );
+    event.preventDefault();
+    event.stopPropagation();
+  });
+}
+
+
 }
 export default ManagerView;

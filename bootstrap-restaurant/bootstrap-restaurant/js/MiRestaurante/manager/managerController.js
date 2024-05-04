@@ -117,6 +117,22 @@
       this[VIEW].mostrarPlatosAleatorio(this[MODEL].platosAleatorios(3));
       //muestra las categorias disponibles en la parte central
       this[VIEW].showCategoriesEnParteCentral(this[MODEL].categories);
+    
+      // añado para esta práctica 
+
+      //mostrar operativa y su manejador
+      this[VIEW].showAdminMenu();
+      this[VIEW].bindAdminMenu(
+
+      //manejador para las categorias
+      this.handleNewCategoryForm,
+        this.handleRemoveCategoryForm,
+        this.handleNewProductForm,
+        this.handleRemoveProductForm,
+        this.handleRemoveProductForm2,
+      );
+    
+    
     };
 
     //4 +++++++++++++++++++++++++++++ INIT Y MANEJADOR PARA EL INIT
@@ -240,6 +256,160 @@
         this[VIEW].mostrarFichaPlato(plato); //pinta en la vista
         
     };
+
+
+    //-------------------------- añado manejadores para esta práctica ---------------
+
+    // formulario nueva categoria
+    handleNewCategoryForm = () => {
+      this[VIEW].showNewCategoryForm();
+      this[VIEW].bindNewCategoryForm(this.handleCreateCategory);
+    };
+
+    //crear categoria
+    handleCreateCategory = (title, url, desc) => {
+      const cat = this[MODEL].getCategory(title, url);
+      cat.description = desc;
+  
+      let done; let
+        error;
+      try {
+        this[MODEL].addCategory(cat);
+        done = true;
+        this.onAddCategory();
+      } catch (exception) {
+        done = false;
+        error = exception;
+      }
+      this[VIEW].showNewCategoryModal(done, cat, error);
+    };
+
+    //borrar categoria
+    handleRemoveCategory = (title) => {
+      let done; let error; let
+        cat;
+      try {
+        cat = this[MODEL].getCategory(title);
+        this[MODEL].removeCategory(cat);
+        done = true;
+        this.onAddCategory();
+      } catch (exception) {
+        done = false;
+        error = exception;
+      }
+      this[VIEW].showRemoveCategoryModal(done, cat, error);
+    };
+
+    //nuevo producto en formulario
+    handleNewProductForm = () => {
+      this[VIEW].showNewProductForm(this[MODEL].categories);
+      this[VIEW].bindNewProductForm(this.handleCreateProduct);
+    };
+
+    //crear producto
+    handleCreateProduct = (serial, brand, model, type, price, tax, url, desc, categories) => {
+      let done; let error; let
+        product;
+  
+      try {
+        product = this[MODEL].getProduct(serial, brand, model, price, type);
+        product.url = url;
+        product.description = desc;
+        product.taxPercentage = tax;
+        this[MODEL].addProduct(product);
+        categories.forEach((title) => {
+          const category = this[MODEL].getCategory(title);
+          this[MODEL].addProductInCategory(category, product);
+        });
+        done = true;
+      } catch (exception) {
+        done = false;
+        error = exception;
+      }
+  
+      this[VIEW].showNewProductModal(done, product, error);
+    };
+
+    //borrar producto del formulario
+    handleRemoveProductForm = () => {
+      this[VIEW].showRemoveProductForm(this[MODEL].categories);
+      this[VIEW].bindRemoveProductSelects(this.handleRemoveProductListByType, this.handleRemoveProductListByCategory);
+    };
+
+    //borrar producto form2
+    handleRemoveProductForm2 = () => {
+      this[VIEW].showRemoveProductForm2(this[MODEL].categories);
+      this[VIEW].bindRemoveProductSubmit(this.handleRemoveProductListByTypeCategory);
+    };
+
+    //varios HAY QUE VER
+
+    //HAY QUE VER
+
+    handleRemoveProductListByType = (type) => {
+      const instance = {
+        Laptop,
+        Camera,
+        Smartphone,
+        Tablet,
+      };
+      this[VIEW].showRemoveProductList(this[MODEL].getTypeProducts(instance[type]));
+      this[VIEW].bindRemoveProduct(this.handleRemoveProduct);
+      this[VIEW].bindShowProduct(this.handleShowProduct);
+    };
+  
+    handleRemoveProductListByCategory = (category) => {
+      const cat = this[MODEL].getCategory(category);
+      try {
+        this[VIEW].showRemoveProductList(this[MODEL].getCategoryProducts(cat));
+        this[VIEW].bindRemoveProduct(this.handleRemoveProduct);
+        this[VIEW].bindShowProduct(this.handleShowProduct);
+      } catch (error) {
+        this[VIEW].showRemoveProductListError(cat);
+      }
+    };
+  
+    handleRemoveProductListByTypeCategory = (type, category) => {
+      const instance = {
+        Laptop,
+        Camera,
+        Smartphone,
+        Tablet,
+      };
+  
+      let cat = null;
+      if (category) cat = this[MODEL].getCategory(category);
+      let instanceType = null;
+      if (type) instanceType = instance[type];
+  
+      this[VIEW].showRemoveProductList(this[MODEL].getProductsByTypeAndCategory(instanceType, cat, 'model'));
+      this[VIEW].bindRemoveProduct(this.handleRemoveProduct);
+      this[VIEW].bindShowProduct(this.handleShowProduct);
+    };
+  
+    handleRemoveProduct = (serial) => {
+      let done; let error; let
+        product;
+      try {
+        product = this[MODEL].getProduct(serial);
+        this[MODEL].removeProduct(product);
+        done = true;
+      } catch (exception) {
+        done = false;
+        error = exception;
+      }
+      this[VIEW].showRemoveProductModal(done, product, error);
+    };
+
+
+    // borrar categoria del formulario
+    handleRemoveCategoryForm = () => {
+      this[VIEW].showRemoveCategoryForm(this[MODEL].categories);
+      this[VIEW].bindRemoveCategoryForm(this.handleRemoveCategory, this.handleProductsCategoryList);
+    };
+
+
+
 
   } //fin class
 
