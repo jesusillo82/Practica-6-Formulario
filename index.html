@@ -1,0 +1,190 @@
+<!--
+    TAREA 6 FORMULARIO
+    
+    Evolucionamos la práctica 5 para permitir gestionar objetos creados.
+Funcionalidades a desarrollar
+A continuación, se detallan las funcionalidades que deberemos implementar.
+1. Crea un formulario que permita crear un nuevo plato. Se podrá elegir las categorías a las
+que pertenece y sus alergenos. El formulario debe cargarse en la parte central de la página
+o en un modal.
+2. Formulario para eliminar un plato manteniendo la integridad referencial del resto de
+objetos.
+3. Implementa un formulario que permita asignar y desasignar platos a menús, además de
+gestionar el orden de los platos.
+4. Crea un formulario para poder añadir nuevas categorías, además deberás permitir eliminar
+las categorías, siempre manteniendo la integridad referencial de los objetos eliminados.
+5. Crea un formulario para crear restaurantes.
+6. Crea un formulario que permita modificar las categorías de un plato.
+7. Los menús de navegación deben de actualizarse en base a las operaciones de creación y
+eliminación de objetos.
+Es obligatorio que cada uno de los formularios estén validados y que muestren mensajes de
+éxito y de error para informar al usuario de las acciones realizadas.
+No es necesario gestionar los alérgenos en la práctica.
+
+
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tarea 5 Desarrollo Web en entrono cliente DAW">
+  <meta name="author" content="Jesús Bernabé Imedio Perea">
+  <link rel="shortcut icon" href="bootstrap-restaurant/bootstrap-restaurant/themes/assets/ico/favicon.ico">
+  <title>Tarea 5 DOM</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="bootstrap-restaurant/bootstrap-restaurant/themes/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- hoja estilo css -->
+  <link href="bootstrap-restaurant/bootstrap-restaurant/themes/assets/css/carousel.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+
+  <!--menu navegacion superior-->
+  <div class="navbar-wrapper">
+    <div class="container">
+
+      <div class="navbar navbar-inverse navbar-static-top" role="navigation">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+
+          </div>
+          <div class="navbar-collapse collapse">
+            <ul id="menuCabecera"  class="nav navbar-nav">
+
+              <li>
+                <a id="init"  href="#">Inicio</a>
+              </li>
+
+              <!-- Menu desplegable categorias-->
+              <!-- Menu desplegable restaurantes-->
+
+              <!-- Menu desplegable alergenos-->
+              <!-- Menu desplegable de menus-->
+
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- navegacion con migas de pan-->
+  <div>
+    
+
+  </div>
+  
+  <!-- carrusel con los 3 platos mostrados de forma aleatoria-->
+
+  <div class="container marketing">
+    <div id="myCarousel4" class="carousel slide" data-ride="carousel">
+      
+    </div>
+  </div>
+
+  <!-- div bienvenida-->
+  <div class="introSection">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <h1 class="cntr">Bienvenidos a la página Web de nuestra cadena de restaurantes</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+
+  <!-- PARTE CENTRAL PARA FUNCIONALIDAD-->
+
+  <!-- div central cont titulo y descripcion-->
+  <div id="zonaCentralTitulo"    class="mainTitle">
+   
+  </div>
+
+  <!-- zona central para mostrar las funcionalidades-->
+  <div id="zonaCentral"   class="container marketing">
+    
+  </div>
+
+
+  <!-- parte informativa con foto cadena restaurante-->
+  <div class="introSection">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4">
+          <h3>Nuestra cadena</h3>
+          <p>
+            Con una larga experiencia en el sector, nuestra cadena de restaurantes se carácteriza por unas instalaciones 
+            cómodas y amplias.
+             <br><br>
+            Todos nuestros productos son de gran calidad y nuestros proveedores locales.
+          </p>
+        </div>
+        <div class="col-lg-4">
+          <h3>Instalaciones</h3>
+          <p>
+            Disponemos de zona infantil con servicio de ludoteca. <br><br>
+            Climatizado y adaptado a personas con movilidad reducida.
+          </p>
+        </div>
+
+        <div class="col-lg-4">
+          <img id="fotoRestaurante" alt="foto restaurante" src="bootstrap-restaurant/bootstrap-restaurant/themes/assets/images/fondoRestaurante.jpg"/> 
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--footer-->
+  <footer>
+    <div class="container">
+      <p class="pull-right"><a href="#">subir arriba</a></p>
+      <p>&copy; 2024 Jesús Bernabé Imedio Perea; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
+    </div>
+  </footer>
+
+  
+
+  <!-- jquery para navegadores viejos -->
+  <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+
+
+  <!-- adjunto jquery mas actual tambien porque me daba problemas Mozilla Firefox con la versión anterior de jquery-->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <!-- bootstrap-->
+  <script src="bootstrap-restaurant/bootstrap-restaurant/themes/dist/js/bootstrap.min.js"></script>
+  <!-- placeholder rellenar huecos imagenes-->
+  <script src="bootstrap-restaurant/bootstrap-restaurant/themes/assets/js/holder.js"></script>
+  
+
+
+  <!-- Importaciones para el proyecto Mi Restaurante, es un módulo
+	al ser un modulo implica que se instanciara el objeto que me haga falta,los módulos
+	implementan internamente un single lo que quiere decir que aunque se importe un módulo tres 
+	o cuatro veces en distintas partes de la aplicación sólo se cargará una única vez
+	y los objetos se instanciarán una única vez
+    - dentro de miRestaurante.js tengo import ManagerApp from './manager/managerApp.js'
+    el cual accedera al resto de los script del manager,vita,controlador;
+  -->
+	<script src="bootstrap-restaurant/bootstrap-restaurant/js/MiRestaurante/miRestaurante.js" type="module"></script>
+
+
+</body>
+
+</html>
