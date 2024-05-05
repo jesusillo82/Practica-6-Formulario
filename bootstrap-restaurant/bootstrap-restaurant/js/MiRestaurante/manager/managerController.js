@@ -113,6 +113,9 @@
       //carga menu de menus y bind asociado
       this.onAddMenus();
 
+      // AÑADO carga menu con la operativa
+      this.onAddOperativa();
+
       //muestra 3 platos aleatorios tras menu de cabecera
       this[VIEW].mostrarPlatosAleatorio(this[MODEL].platosAleatorios(3));
       //muestra las categorias disponibles en la parte central
@@ -125,11 +128,13 @@
       this[VIEW].bindAdminMenu(
 
       //manejador para las categorias
-      this.handleNewCategoryForm,
+      this.handleCrearPlatoForm,
+      /*
         this.handleRemoveCategoryForm,
         this.handleNewProductForm,
         this.handleRemoveProductForm,
         this.handleRemoveProductForm2,
+        */
       );
     
     
@@ -198,6 +203,18 @@
     
     };
 
+    // Añado para esta práctica mostrar menu en cabecera con la operativa
+    onAddOperativa = () => {
+      this[VIEW].showAdminMenu();
+      
+      /*
+      this[VIEW].bindProductsMenuListInMenu(
+        this.handleProductsMenuList
+      );
+      */
+    
+    };
+
 
     // este manejador lo ejecutare cada vez que haga click en cada una de las categorias para mostrar los platos asociados y sea desde 
     //la parte central o desde el menu De momento no ttiene funcionalidad
@@ -260,12 +277,41 @@
 
     //-------------------------- añado manejadores para esta práctica ---------------
 
-    // formulario nueva categoria
+    //-+++++++++++++++++++++ crear PLATO
+    handleCrearPlatoForm = () => {
+      this[VIEW].showNewPlatoForm();
+      //this[VIEW].bindNewPlatoForm(this.handleCrearPlato);
+    };
+
+    //crear PLATO
+    handleCrearPlato = (name,descrip,ingredientes,image) => {
+      const objetoPlato = this[MODEL].createDish(name, description, ingredientes, image) ;
+      objetoPlato.description = descrip;
+  
+      let done; 
+      let error;
+      try {
+        this[MODEL].addDish(objetoPlato);
+        done = true;
+        this.onAddCategory(); // hay que modificarlo para actualizzar los platos
+      } catch (exception) {
+        done = false;
+        error = exception;
+      }
+      this[VIEW].showNewPlatoModal(done, objetoPlato, error); //muestro en modal
+    };
+    //+++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+    /*
+    // formulario para crear nueva categoria PABLO
     handleNewCategoryForm = () => {
       this[VIEW].showNewCategoryForm();
       this[VIEW].bindNewCategoryForm(this.handleCreateCategory);
     };
-
+    */
     //crear categoria
     handleCreateCategory = (title, url, desc) => {
       const cat = this[MODEL].getCategory(title, url);

@@ -604,6 +604,34 @@ class ManagerView {
 
   //mostrar en MODALES o se puede mostrar en la PARTE CENTRAL segun enunciado
 
+
+  //mostrar platos en MODAL
+  showNewPlatoModal(done, cat, error) {
+    const messageModalContainer = document.getElementById('messageModal');
+    const messageModal = new bootstrap.Modal('#messageModal');
+
+    const title = document.getElementById('messageModalTitle');
+    title.innerHTML = 'Nueva Categoría';
+    const body = messageModalContainer.querySelector('.modal-body');
+    body.replaceChildren();
+    if (done) {
+      body.insertAdjacentHTML('afterbegin', `<div class="p-3">La categoría <strong>${cat.title}</strong> ha sido creada correctamente.</div>`);
+    } else {
+      body.insertAdjacentHTML(
+        'afterbegin',
+        `<div class="error text-danger p-3"><i class="bi bi-exclamation-triangle"></i> La categoría <strong>${cat.title}</strong> ya está creada.</div>`,
+      );
+    }
+    messageModal.show();
+    const listener = (event) => {
+      if (done) {
+        document.fNewPlato.reset();
+      }
+      document.fNewPlato.ncTitle.focus();
+    };
+    messageModalContainer.addEventListener('hidden.bs.modal', listener, { once: true });
+  }
+
   //mostrar categorias en MODAL
   showNewCategoryModal(done, cat, error) {
     const messageModalContainer = document.getElementById('messageModal');
@@ -722,7 +750,7 @@ class ManagerView {
     };
     messageModalContainer.addEventListener('hidden.bs.modal', listener, { once: true });
   }
-  
+
 
 
 
@@ -735,23 +763,120 @@ class ManagerView {
 
   // método que muestra menu con las operaciones del formulario
   showAdminMenu() {
+
+    
+
+    //************************************** */
+
+    /*
+    for (const alergeno of alergenos) {
+      container.insertAdjacentHTML('beforeend', `<li><a data-category="${alergeno.name}" class="dropdown-item" href="#product-list">${alergeno.name}</a></li>`);
+    }
+    */
+
+   
+    
     const menuOption = document.createElement('li');
-    menuOption.classList.add('nav-item');
     menuOption.classList.add('dropdown');
-    menuOption.insertAdjacentHTML(
-      'afterbegin',
-      '<a class="nav-link dropdown-toggle" href="#" id="navServices" role="button" data-bs-toggle="dropdown" aria-expanded="false">	Adminitración</a>',
+    menuOption.insertAdjacentHTML('beforeend', `<a class="dropdown-toggle" href="#" id="menuOperativa"
+    data-toggle="dropdown">Operativa <b class="caret"></b></a>`
     );
+
     const suboptions = document.createElement('ul');
     suboptions.classList.add('dropdown-menu');
+    
+    suboptions.insertAdjacentHTML('beforeend', '<li><a id="lcrearPlato" class="dropdown-item" href="#new-plato">Crear plato</a></li>');
+    suboptions.insertAdjacentHTML('beforeend', '<li><a id="leliminarPlato" class="dropdown-item" href="#del-plato">Eliminar plato</a></li>');
+    suboptions.insertAdjacentHTML('beforeend', '<li><a id="lasignarPlatoMenu" class="dropdown-item" href="#asignar-plato">Asignar plato a menu</a></li>');
+    suboptions.insertAdjacentHTML('beforeend', '<li><a id="ldeasignarPlatoMenu" class="dropdown-item" href="#deasignar-plato">Deasignar plato a menu</a></li>');
+    suboptions.insertAdjacentHTML('beforeend', '<li><a id="lcrearCategoria" class="dropdown-item" href="#new-categoria">Crear categoria</a></li>');
+    suboptions.insertAdjacentHTML('beforeend', '<li><a id="leliminarCategoria" class="dropdown-item" href="#del-categoria">Eliminar categoria</a></li>');
+    suboptions.insertAdjacentHTML('beforeend', '<li><a id="lmodificarCategoria" class="dropdown-item" href="#change-categoria">Modificar categoria</a></li>');
+    suboptions.insertAdjacentHTML('beforeend', '<li><a id="lcrearRestaurante" class="dropdown-item" href="#new-restaurant">Crear restaurante</a></li>');
+
+    /*
     suboptions.insertAdjacentHTML('beforeend', '<li><a id="lnewCategory" class="dropdown-item" href="#new-category">Crear categoría</a></li>');
     suboptions.insertAdjacentHTML('beforeend', '<li><a id="ldelCategory" class="dropdown-item" href="#del-category">Eliminar categoría</a></li>');
     suboptions.insertAdjacentHTML('beforeend', '<li><a id="lnewProduct" class="dropdown-item" href="#new-product">Crear producto</a></li>');
     suboptions.insertAdjacentHTML('beforeend', '<li><a id="ldelProduct" class="dropdown-item" href="#del-product">Eliminar producto</a></li>');
     suboptions.insertAdjacentHTML('beforeend', '<li><a id="ldelProduct2" class="dropdown-item" href="#del-product">Eliminar producto 2</a></li>');
+    */
     menuOption.append(suboptions);
-    this.menu.append(menuOption);
+    this.menuCat.append(menuOption);
   }
+
+
+
+  // añado para la practica CORRECTO
+  //método formulario añadir platos
+showNewPlatoForm() {
+  this.zonaCentralTitulo.replaceChildren();
+  if (this.zonaCentral.children.length > 1) this.zonaCentral.children[1].remove();
+
+  const container = document.createElement('div');
+  container.classList.add('container');
+  container.classList.add('my-3');
+  container.id = 'new-plato';
+
+  container.insertAdjacentHTML(
+    'afterbegin',
+    '<h1 class="display-5">Crear plato</h1>',
+  );
+  container.insertAdjacentHTML(
+    'beforeend',
+    `<form name="fNewPlato" role="form" class="row g-3" novalidate>
+    <div class="col-md-6 mb-3">
+      <label class="form-label" for="ncTitle">Nombre *</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-type"></i></span>
+        <input type="text" class="form-control" id="ncTitle" name="ncTitle"
+          placeholder="Nombre del plato" value="" required>
+        <div class="invalid-feedback">El nombre es obligatorio.</div>
+        <div class="valid-feedback">Correcto.</div>
+      </div>
+    </div>
+    <div class="col-md-6 mb-3">
+      <label class="form-label" for="ncUrl">URL de la imagen *</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-file-image"></i></span>
+        <input type="url" class="form-control" id="ncUrl" name="ncUrl" placeholder="URL de la imagen"
+          value="" required>
+        <div class="invalid-feedback">La URL no es válida.</div>
+        <div class="valid-feedback">Correcto.</div>
+      </div>
+    </div>
+    <div class="col-md-12 mb-3">
+      <label class="form-label" for="ncDescription">Descripción</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-body-text"></i></span>
+        <input type="text" class="form-control" id="ncDescription" name="ncDescription" value="">
+        <div class="invalid-feedback"></div>
+        <div class="valid-feedback">Correcto.</div>
+      </div>
+    </div>
+
+    <div class="col-md-12 mb-3">
+      <label class="form-label" for="ncIngredientes">Ingredientes</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-body-text"></i></span>
+        <input type="text" class="form-control" id="ncDescription" name="ncIngredientes" value="">
+        <div class="invalid-feedback"></div>
+        <div class="valid-feedback">Correcto.</div>
+      </div>
+    </div>
+
+
+
+
+
+    <div class="mb-12">
+      <button class="btn btn-primary" type="submit">Enviar</button>
+      <button class="btn btn-primary" type="reset">Cancelar</button>
+    </div>
+  </form>`,
+  );
+  this.zonaCentral.append(container);
+}
 
   // método muestra en modal categoria
   showNewCategoryModal(done, cat, error) {
@@ -809,8 +934,10 @@ class ManagerView {
   }
 
 
-
+/* DE PABLO ME DA ERROR
   //método formulario añadir categorias
+
+
   showNewCategoryForm() {
     this.main.replaceChildren();
     if (this.categories.children.length > 1) this.categories.children[1].remove();
@@ -864,7 +991,7 @@ class ManagerView {
     );
     this.main.append(container);
   }
-
+*/
 
   //método formulario para borrar categorias
   showRemoveCategoryForm(categories) {
@@ -1289,12 +1416,35 @@ showRemoveProductModal(done, product, error) {
 //-------------------------------- METODOS BIND ASOCIADOS -------------------------------
 
 
-// bind admin menu
-bindAdminMenu(hNewCategory, hRemoveCategory, hNewProductForm, hRemoveProduct, hRemoveProduct2) {
-  const newCategoryLink = document.getElementById('lnewCategory');
-  newCategoryLink.addEventListener('click', (event) => {
-    this[EXCECUTE_HANDLER](hNewCategory, [], '#new-category', { action: 'newCategory' }, '#', event);
+// bind admin menu recibe manaejadores para cada una de las operaciones
+//bindAdminMenu(handleCrearPlato, hRemoveCategory, hNewProductForm, hRemoveProduct, hRemoveProduct2) {
+
+
+  bindAdminMenu(handleCrearPlato) {
+
+
+  /*
+  suboptions.insertAdjacentHTML('beforeend', '<li><a id="lcrearPlato" class="dropdown-item" href="#new-plato">Crear plato</a></li>');
+  suboptions.insertAdjacentHTML('beforeend', '<li><a id="leliminarPlato" class="dropdown-item" href="#del-plato">Eliminar plato</a></li>');
+  suboptions.insertAdjacentHTML('beforeend', '<li><a id="lasignarPlatoMenu" class="dropdown-item" href="#asignar-plato">Asignar plato a menu</a></li>');
+  suboptions.insertAdjacentHTML('beforeend', '<li><a id="ldeasignarPlatoMenu" class="dropdown-item" href="#deasignar-plato">Deasignar plato a menu</a></li>');
+  suboptions.insertAdjacentHTML('beforeend', '<li><a id="lcrearCategoria" class="dropdown-item" href="#new-categoria">Crear categoria</a></li>');
+  suboptions.insertAdjacentHTML('beforeend', '<li><a id="leliminarCategoria" class="dropdown-item" href="#del-categoria">Eliminar categoria</a></li>');
+  suboptions.insertAdjacentHTML('beforeend', '<li><a id="lmodificarCategoria" class="dropdown-item" href="#change-categoria">Modificar categoria</a></li>');
+  suboptions.insertAdjacentHTML('beforeend', '<li><a id="lcrearRestaurante" class="dropdown-item" href="#new-restaurant">Crear restaurante</a></li>');
+*/
+
+
+
+  //PRUEBO SOLO CON PLATO
+  const newPlatoLink = document.getElementById('lcrearPlato');
+  newPlatoLink.addEventListener('click', (event) => {
+    this[EXCECUTE_HANDLER](handleCrearPlato, [], '#new-plato', { action: 'newPlato' }, '#', event);
   });
+
+
+
+/*
   const delCategoryLink = document.getElementById('ldelCategory');
   delCategoryLink.addEventListener('click', (event) => {
     this[EXCECUTE_HANDLER](hRemoveCategory, [], '#remove-category', { action: 'removeCategory' }, '#', event);
@@ -1311,11 +1461,19 @@ bindAdminMenu(hNewCategory, hRemoveCategory, hNewProductForm, hRemoveProduct, hR
   delProductLink2.addEventListener('click', (event) => {
     this[EXCECUTE_HANDLER](hRemoveProduct2, [], '#remove-product', { action: 'removeProduct2' }, '#', event);
   });
+
+
+*/
+
+
 }
 
-//bind para nueva categoria en formulario
-bindNewCategoryForm(handler) {
-  newCategoryValidation(handler);
+
+
+
+//bind para nuevO PLATOn formulario
+bindNewPlatoForm(handler) {
+  newPlatoValidation(handler);
 }
 
 // bind para borrar categoria del formulario
@@ -1432,6 +1590,22 @@ bindRemoveProductSubmit(handler) {
     event.stopPropagation();
   });
 }
+
+
+// TODO LO QUE AÑADO YO¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
+
+
+
+
+//bind para nuevo plato en forumlario
+bindNewPlatoForm(handler) {
+  newPlatoValidation(handler);
+}
+
+
+
+
+
 
 
 }

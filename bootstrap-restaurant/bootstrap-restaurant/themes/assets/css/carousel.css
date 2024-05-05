@@ -270,3 +270,18 @@ footer{padding:18px 0; background:#111; color:#fff; font-size:large;}
 }
 
 
+/* formulario*/
+form{
+  background-color: whitesmoke;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  color: #C83A3A;
+}
+
+#new-plato{
+  color: brown;
+  font-weight: bold;
+  background-color: burlywood;
+
+}
+

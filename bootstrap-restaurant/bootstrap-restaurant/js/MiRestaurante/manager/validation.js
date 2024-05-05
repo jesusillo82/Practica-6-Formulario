@@ -23,8 +23,48 @@ function defaultCheckElement(event) {
   }
 }
 
+//modifico esta parte para adaptar a plato
+
+/*
 function newCategoryValidation(handler) {
   const form = document.forms.fNewCategory;
+  form.setAttribute('novalidate', true);
+  form.addEventListener('submit', function (event) {
+    let isValid = true;
+    let firstInvalidElement = null;
+
+    this.ncDescription.value = this.ncDescription.value.trim();
+    showFeedBack(this.ncDescription, true);
+
+    if (!this.ncUrl.checkValidity()) {
+      isValid = false;
+      showFeedBack(this.ncUrl, false);
+      firstInvalidElement = this.ncUrl;
+    } else {
+      showFeedBack(this.ncUrl, true);
+    }
+
+    if (!this.ncTitle.checkValidity()) {
+      isValid = false;
+      showFeedBack(this.ncTitle, false);
+      firstInvalidElement = this.ncTitle;
+    } else {
+      showFeedBack(this.ncTitle, true);
+    }
+
+    if (!isValid) {
+      firstInvalidElement.focus();
+    } else {
+      handler(this.ncTitle.value, this.ncUrl.value, this.ncDescription.value);
+    }
+    event.preventDefault();
+    event.stopPropagation();
+  });
+
+  */
+
+function newPlatoValidation(handler) {
+  const form = document.forms.fNewPlato;
   form.setAttribute('novalidate', true);
   form.addEventListener('submit', function (event) {
     let isValid = true;
